@@ -25,35 +25,34 @@
                     <div class="tenant-name">
                     
                         <label for="tenant-name">NAME:</label>
-                        <input type="text" id="tenant-name" required/>
+                        <input type="text" id="tenant-name" placeholder="tenant name" />
+                        <input type="hidden" name="id" value="" id="tenantId">
                        
                     </div>
                 </div>
                 <div class="tenant-buttons">
                     <a id="save_entity" href="#"><img src="/images/go.png" alt="GO"></a>
-                    <a href="#"><img src="/images/edit-sans.png" alt="EDIT">
-                    </a>
-                    <a href="#"><img src="/images/delete.png" alt="DELETE">
-                    </a>
+                    <a href="#"><img src="/images/edit-sans.png" alt="EDIT"></a>
+                    <a href="#"><img src="/images/delete.png" alt="DELETE"></a>
                      <!-- <input type="image" src="/images/delete.png" alt="save" id="clear" onclick=""> -->
                 </div>
 
                 <div class='clearfix'></div>
             </div>
-            <div class="dummy-section container"></div>
+            
             <div class="main-section">
                 <h3>ENTITIES <input type="image" src="/images/go.png" alt="save" id="save" onclick="saveAll()"></h3>
                 <div class="container">
                     <div class="fixed-entity">
                         <div class="fixed-entity-name-block">
                             <label for="fixed-entity-name">ENTITY NAME:</label>
-                            <input type="text" id="fixed-entity-name" data-value="entity" required/>
+                            <input type="text" id="fixed-entity-name" data-value="entity" placeholder="entity name"/>
                             <input type="hidden" name="id" value="" id="setId">
                         </div>
                         <h3 class="col-lg-12">FIELD:</h3>
                         <div class="fixed-entity-field-block">
                             <label for="fixed-entity-field-name">NAME:</label>
-                            <input type="text" id="fixed-entity-field-name" data-value="field" required/>
+                            <input type="text" id="fixed-entity-field-name" data-value="field" placeholder="field name"/>
                             <label for="fixed-entity-field-type">TYPE:</label>
                             <select name="type" id="fixed-entity-field-type" data-value="type">
                                 <option value="STRING">STRING</option>

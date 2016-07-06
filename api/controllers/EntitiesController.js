@@ -90,10 +90,14 @@ module.exports = {
         Entities.find(id, function(err, entities) {
             if (err) return res.send(err, 500);
             if (!entities) return res.send("No user with that id.", 404);
-            Entities.destroy(id, function(err) {
-                if (err) return res.send(err, 500);
+
+            Entities.destroy({ id: id }).exec(function(err, entities) {
+                        if (err) return res.send(err, 500);
+                        Fields.destroy({ entities: id }).exec(function(err, fields) {
+                            if (err) return res.send(err, 500);
+                        });
+                    });
                 res.json({ EntitiesValues: "deleted" });
-            });
         });
     }
 };
