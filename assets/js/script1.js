@@ -338,7 +338,19 @@ function saveAll() {
 $(".show :input[type='text']").prop("readonly", true);
 $(".mySelect").attr("disabled", true);
             
-               
+                $.ajax({
+                    url: "http://localhost:1337/entities/" + entitiyId,
+                    type: 'DELETE',
+                    data: data,
+                    success: function(result) {
+                        console.log(JSON.stringify(result));
+                    },
+                    error: function(err) {
+                        alert(JSON.stringify(err));
+                    }
+
+                });
+           
 
 
         },
@@ -351,26 +363,10 @@ $(".mySelect").attr("disabled", true);
 }
 
 function dynamicClose(event) {
-    var entitiyId = event.currentTarget.previousSibling.value;
-    if(window.confirm("Are You Sure To DELETE This Entity??!")) {
-     $.ajax({
-                    url: "http://localhost:1337/entities/" + entitiyId,
-                    type: 'DELETE',
-                    data: data,
-                    success: function(result) {
-                        console.log(JSON.stringify(result));
-                         a = event.currentTarget.parentNode.parentNode.parentNode.parentNode;
+                if(window.confirm("Are You Sure To DELETE This Entity??!")) {
+                a = event.currentTarget.parentNode.parentNode.parentNode.parentNode;
                 b = event.currentTarget.parentNode.parentNode.parentElement;
                 a.removeChild(b);
-                    },
-                    error: function(err) {
-                        alert(JSON.stringify(err));
-                    }
-
-                });
-           
-                
-               
                 }
             }
 function dynamicEdit(event) {
@@ -384,14 +380,14 @@ $(".mySelect").attr("disabled", false);
     var data = {
 
 
-            "fields": _.map($(".showClass"), e => ({
-            "field_name": $(e).find(".fieldShowValue").val(),
-            "field_type": $(e).find(".mySelect").val(),
-            "id": $(e).find(".fieldId").val(),
-        })),
-
-        "name": $(".entityShowValue").val(),
-
+            "entities": _.map($(".show"), e => ({
+                "name": $(e).find(".entityShowValue").val(),
+                "fields": _.map($(e).find(".showClass"), e => ({
+                    "field_name": $(e).find(".fieldShowValue").val(),
+                    "field_type": $(e).find(".mySelect").val(),
+                    "id": $(e).find(".fieldId").val(),
+                }))
+            })),
 
     };
     console.log(data);
@@ -418,7 +414,7 @@ function addField(event) {
     var div2 = document.createElement("div");
       var textFields = document.createElement("input");
                 textFields.setAttribute("type", "text");
-                textFields.setAttribute("class", "fieldShowValue");
+                textFields.setAttribute("data-i", "fieldShowValue");
                 textFields.setAttribute("style", "width: 36%; padding: 0.9%; margin: 1%; margin-left: 6%; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0;");
                 div2.appendChild(textFields);
                 // console.log(document.querySelectorAll('.fieldShowValue'));
