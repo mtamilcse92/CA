@@ -171,7 +171,7 @@ function saveAll() {
 
         success: function(result) {
 
-
+         //remove insert fields
             fixedEntity.removeChild(insertFields);
             insertFields = document.createElement("div");
             insertFields.setAttribute("class", "temp-value");
@@ -265,12 +265,13 @@ function saveAll() {
             var hr = document.createElement('hr');
             hr.setAttribute("style", "width: 88%;");
             showChild.appendChild(hr);
-            div1 = document.createElement("div");
-            showChild.appendChild(div1);
+            // div1 = document.createElement("div");
+            // showChild.appendChild(div1);
             
             fCount = fieldCount;
             for (i = 0; i < fCount; i++) {
                 var div = document.createElement("div");
+                div.setAttribute("class", "allFields");
                 fieldsValue = result.entitiesCreated[0].fields[i].field_name;
                 fieldsType = result.entitiesCreated[0].fields[i].field_type;
                  fieldsId = result.entitiesCreated[0].fields[i].id;
@@ -330,12 +331,12 @@ function saveAll() {
         
             dl.appendChild(dd);
             accordion.appendChild(dl);
-            show.appendChild(accordion);
+            $(accordion).insertAfter(show);
             document.getElementById('fixed-entity-field-name').value = "";
             document.getElementById('fixed-entity-name').value = "";
 
 
-$(".show :input[type='text']").prop("readonly", true);
+$(".accordion :input[type='text']").prop("readonly", true);
 $(".mySelect").attr("disabled", true);
             
                 $.ajax({
@@ -370,12 +371,14 @@ function dynamicClose(event) {
                 }
             }
 function dynamicEdit(event) {
-    $(".show :input[type='text']").prop("readonly", false);
+    abc(event);
+    $(".accordion :input[type='text']").prop("readonly", false);
 $(".mySelect").attr("disabled", false);
                 this.src = "/images/go.png";
                 this.addEventListener("click", function(event) {
                     var idEntity = event.currentTarget.previousSibling.previousSibling.value;
     alert(idEntity);
+    this.src = "/images/edit-sans.png";
     var e;
     var data = {
 
@@ -398,6 +401,10 @@ $(".mySelect").attr("disabled", false);
 
         success: function(result) {
             alert("updated");
+                 $(".accordion :input[type='text']").prop("readonly", true);
+$(".mySelect").attr("disabled", true);
+
+alert("supe");
         },
         error: function(err) {
             alert(JSON.stringify(err));
@@ -407,11 +414,14 @@ $(".mySelect").attr("disabled", false);
     });
 
                 });
+                
+                
             
-            };
+            }
 
 function addField(event) {
     var div2 = document.createElement("div");
+    div2.setAttribute("class", "allFields");
       var textFields = document.createElement("input");
                 textFields.setAttribute("type", "text");
                 textFields.setAttribute("data-i", "fieldShowValue");
@@ -440,7 +450,8 @@ function addField(event) {
         fieldCBtn.src = "/images/delete.png";
         fieldCBtn.addEventListener("click", delField);
         div2.appendChild(fieldCBtn);
-        event.currentTarget.nextSibling.nextSibling.appendChild(div2);
+        $(div2).insertAfter(event.currentTarget.nextSibling);
+        // event.currentTarget.nextSibling.appendChild(div2);
 }
 
 function delField(event) {
