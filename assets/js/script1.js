@@ -3,6 +3,9 @@ var tenantButtons = document.querySelectorAll(".tenant-buttons a");
 var dummySection = document.querySelector(".dummy-section");
 var insertFields = document.querySelector(".temp-value")
 var fixedEntity = document.querySelector(".fixed-entity");
+// var saveAll = document.querySelector(".main-section h3 input");
+
+// saveAll.addEventListener("click", saveAll);
 
 var tenant_id = "";
 
@@ -15,6 +18,7 @@ $(document).ready(function() {
 });
 
 function enable_entities() {
+    event.preventDefault();
 
     tenantButtons[0].style.display = "none";
     tenantButtons[1].style.display = "inline";
@@ -31,17 +35,16 @@ var fieldCount = 0,
     insertFields;
 
 
-elements[2].addEventListener("click", function(event) {
+elements[2].addEventListener("click", addE);
+
+function addE(event) {
+    event.preventDefault();
+
+    var entityName = document.querySelector("#fixed-entity-name").value;
+    var fieldName = document.querySelector("#fixed-entity-field-name").value;
 
 
-    if (((document.getElementById('fixed-entity-name').value).trim() == '')) {
-        alert('missing name');
-        return
-    } else if (((document.getElementById('fixed-entity-field-name').value).trim() == '')) {
-
-        alert('missing fields name');
-        return
-    } else {
+    if (((entityName.trim() != '' || entityName.trim() != null) && (fieldName.trim() != '' || fieldName.trim() != null)) && (entityName.match(letters) && fieldName.match(letters))) {
 
         fieldDiv = document.createElement("div");
         fieldDiv.setAttribute("class", "entityClass");
@@ -78,18 +81,65 @@ elements[2].addEventListener("click", function(event) {
         });
 
 
-        elements[0].value = " ";
+        elements[0].value = "";
 
         insertFields.appendChild(fieldDiv);
 
         fieldCount++;
         console.log(fieldCount);
+        this.removeEventListener("click", this, false);
+    } else if (entityName.trim() == '' || !entityName.match(letters)) {
+        alert('Enter valid Entity Name');
+
+    } else {
+
+        alert('Enter valid Field Name');
+
     }
 
 
+    elements[2].removeEventListener("click", addE);
+
+}
+
+tenantButtons[1].addEventListener("click", function(event) {
+    event.preventDefault();
+
+    this.src = "/images/go.png";
+    $("#tenant-name").prop("readonly", false);
+
+    this.addEventListener("click", submitTenant);
+
+
+
+    this.removeEventListener("click", this);
+
 });
 
+function submitTenant(event) {
+    event.preventDefault();
+
+    var tenantHidden = document.getElementById("tenantId").value;
+    this.src = "/images/edit-sans.png";
+    alert("update");
+    $.ajax({
+        url: "http://localhost:1337/tenant/" + tenantHidden,
+        type: 'PUT',
+        success: function(result) {
+            alert(JSON.stringify(result));
+            $("#tenant-name").prop("readonly", true);
+        },
+        error: function(err) {
+            alert(JSON.stringify(err));
+        }
+
+    });
+    this.removeEventListener("click", submitTenant);
+}
+
 tenantButtons[2].addEventListener("click", function(event) {
+    event.preventDefault();
+
     var tenantHidden = document.getElementById("tenantId").value;
     alert("delete");
     $.ajax({
@@ -104,49 +154,67 @@ tenantButtons[2].addEventListener("click", function(event) {
 
     });
 
+    this.removeEventListener("click", this);
+
 });
 
-function saveTenant() {
+var letters = /^[A-Za-z]+$/;
 
-    if (document.getElementById('tenant-name').value == '') {
-        alert('missing name');
-        return
+function saveTenant(event) {
+    event.preventDefault();
+
+    var tenantName = document.querySelector("#tenant-name").value;
+    if (tenantName != '' || tenantName != null) {
+
+        if (tenantName.match(letters)) {
+
+            var data = {
+                "name": $("#tenant-name").val()
+            };
+            $.ajax({
+                url: '/tenant/',
+                type: 'POST',
+                data: data,
+                success: function(result) {
+                    var create = _.map(result, 'id');
+                    // var create = _.map(result.entities, enitity => {
+
+                    // });
+                    document.getElementById("tenantId").value = create;
+                    document.getElementById("setId").value = create;
+                    enable_entities(event)
+                    tenant_id = JSON.stringify(create);
+                    alert(tenant_id);
+                    alert(JSON.stringify(result));
+
+                    $("#tenant-name").prop("readonly", true);
+                },
+                error: function(err) {
+                    alert(JSON.stringify(err));
+                }
+
+            });
+
+        } else {
+            alert("Tenant Name Should be a Letters");
+        }
+
     } else {
-        var data = {
-            "name": $("#tenant-name").val()
-        };
-        $.ajax({
-            url: '/tenant/',
-            type: 'POST',
-            data: data,
-            success: function(result) {
-                var create = _.map(result, 'id');
-                // var create = _.map(result.entities, enitity => {
 
-                // });
-                document.getElementById("tenantId").value = create;
-                document.getElementById("setId").value = create;
-                enable_entities(event)
-                tenant_id = JSON.stringify(create);
-                alert(tenant_id);
-                alert(JSON.stringify(result));
-            },
-            error: function(err) {
-                alert(JSON.stringify(err));
-            }
-
-        });
-
+        alert('Missing Tenant Name');
     }
 
+    this.removeEventListener("click", saveTenant);
 
 }
 
-var fCount,fieldGoBtn,dynamicfieldCloseBtn,div1;
+var fCount, fieldGoBtn, dynamicfieldCloseBtn, div1, dynamicAdd;
 
-// document.getElementById("save").addEventListener("click", saveAll);
 
-function saveAll() {
+
+function saveAll(event) {
+    // event.preventDefault();
+
     var id = document.getElementById('setId').value;
     alert(id);
     var e;
@@ -171,7 +239,7 @@ function saveAll() {
 
         success: function(result) {
 
-         //remove insert fields
+            //remove insert fields
             fixedEntity.removeChild(insertFields);
             insertFields = document.createElement("div");
             insertFields.setAttribute("class", "temp-value");
@@ -200,6 +268,7 @@ function saveAll() {
             accordion.setAttribute("class", "accordion");
             accordion.addEventListener("click", abc);
             var dl = document.createElement("dl");
+            dl.setAttribute("style", "border-radius: 1em;")
             var dt = document.createElement("dt");
             var accordionTitle = document.createElement("a");
             accordionTitle.setAttribute("href", "#");
@@ -222,15 +291,15 @@ function saveAll() {
             textEntities.value = enitityValue;
             accordionTitle.appendChild(textEntities);
             var entityIdShow = document.createElement("input");
-                entityIdShow.setAttribute("type", "hidden");
-                entityIdShow.setAttribute("class", "entitiyId");
-                entityIdShow.value=entitiyId;
-                accordionTitle.appendChild(entityIdShow);
-                console.log(entitiyId +"marri");
+            entityIdShow.setAttribute("type", "hidden");
+            entityIdShow.setAttribute("class", "entitiyId");
+            entityIdShow.value = entitiyId;
+            accordionTitle.appendChild(entityIdShow);
+            console.log(entitiyId + "marri");
 
             dynamicfieldCloseBtn = document.createElement("input");
             dynamicfieldCloseBtn.setAttribute("type", "image");
-            dynamicfieldCloseBtn.setAttribute("style", "width: 3%; float: right; margin-top: 1%; margin-right: 2%; background-color: #fff; padding: 1%;");
+            dynamicfieldCloseBtn.setAttribute("style", "width: 3%; float: right; margin-top: 1%; margin-right: 2%; background-color: #fff; padding: 1%; border-radius: 2em;");
             dynamicfieldCloseBtn.src = "/images/delete.png";
             // dieldDummy.appendChild(fieldCloseBtn);
             accordionTitle.appendChild(dynamicfieldCloseBtn);
@@ -238,14 +307,14 @@ function saveAll() {
 
             fieldEditBtn = document.createElement("input");
             fieldEditBtn.setAttribute("type", "image");
-            fieldEditBtn.setAttribute("style", "width: 3%; float: right; margin-top: 1%; margin-right: 1%;background-color: #fff; padding: 1%;");
+            fieldEditBtn.setAttribute("style", "width: 3%; float: right; margin-top: 1%; margin-right: 1%;background-color: #fff; padding: 1%; border-radius: 2em;");
             fieldEditBtn.src = "/images/edit-sans.png";
             fieldEditBtn.addEventListener("click", dynamicEdit);
             // dieldDummy.appendChild(fieldCloseBtn);
             accordionTitle.appendChild(fieldEditBtn);
             dt.appendChild(accordionTitle);
             dl.appendChild(dt);
-            
+
 
 
             // var mybr = document.createElement('br');
@@ -255,26 +324,27 @@ function saveAll() {
             fieldText.innerHTML = "FIELD:";
             showChild.appendChild(fieldText);
 
-            var dynamicAdd = document.createElement("input");
-        dynamicAdd.setAttribute("type", "image");
-        dynamicAdd.src = "/images/Add-green.png";
-        dynamicAdd.setAttribute("style", "width: 3%; float:right; margin: 0.5% 3% 0 0");
-        dynamicAdd.addEventListener("click", addField);
-        showChild.appendChild(dynamicAdd);
+            dynamicAdd = document.createElement("input");
+            dynamicAdd.setAttribute("type", "image");
+            dynamicAdd.src = "/images/Add-green.png";
+            dynamicAdd.setAttribute("style", "width: 3%; float:right; margin: 0.5% 3% 0 0; visibility: hidden");
+            dynamicAdd.addEventListener("click", addField);
+            showChild.appendChild(dynamicAdd);
+
 
             var hr = document.createElement('hr');
             hr.setAttribute("style", "width: 88%;");
             showChild.appendChild(hr);
             // div1 = document.createElement("div");
             // showChild.appendChild(div1);
-            
+
             fCount = fieldCount;
             for (i = 0; i < fCount; i++) {
                 var div = document.createElement("div");
                 div.setAttribute("class", "allFields");
                 fieldsValue = result.entitiesCreated[0].fields[i].field_name;
                 fieldsType = result.entitiesCreated[0].fields[i].field_type;
-                 fieldsId = result.entitiesCreated[0].fields[i].id;
+                fieldsId = result.entitiesCreated[0].fields[i].id;
                 console.log(fieldsValue);
 
                 var textFields = document.createElement("input");
@@ -299,7 +369,7 @@ function saveAll() {
 
 
 
-                for(j = 0; j < array.length; j++) {
+                for (j = 0; j < array.length; j++) {
                     var option = document.createElement("option");
                     option.setAttribute("value", array[j]);
                     option.text = array[j];
@@ -312,23 +382,23 @@ function saveAll() {
                 } else if (fieldsType == "DATE") {
                     selectList.firstChild.nextSibling.selected = true;
                 } else {
-                    selectList.lastChild.slected = true;
+                    selectList.lastChild.selected = true;
                 }
                 fieldCount--;
-        fieldCBtn = document.createElement("input");
-        fieldCBtn.setAttribute("type", "image");
-        fieldCBtn.setAttribute("style", "float: right; width: 3%; margin: 1.8% 3% 0 0");
-        fieldCBtn.src = "/images/delete.png";
-        fieldCBtn.addEventListener("click", delField);
-        div.appendChild(fieldCBtn);
-          showChild.appendChild(div);
+                fieldCBtn = document.createElement("input");
+                fieldCBtn.setAttribute("type", "image");
+                fieldCBtn.setAttribute("style", "float: right; width: 3%; margin: 1.8% 3% 0 0");
+                fieldCBtn.src = "/images/delete.png";
+                fieldCBtn.addEventListener("click", delField);
+                div.appendChild(fieldCBtn);
+                showChild.appendChild(div);
             }
 
-            
-        
-        dd.appendChild(showChild);
 
-        
+
+            dd.appendChild(showChild);
+
+
             dl.appendChild(dd);
             accordion.appendChild(dl);
             $(accordion).insertAfter(show);
@@ -336,22 +406,22 @@ function saveAll() {
             document.getElementById('fixed-entity-name').value = "";
 
 
-$(".accordion :input[type='text']").prop("readonly", true);
-$(".mySelect").attr("disabled", true);
-            
-                $.ajax({
-                    url: "http://localhost:1337/entities/" + entitiyId,
-                    type: 'DELETE',
-                    data: data,
-                    success: function(result) {
-                        console.log(JSON.stringify(result));
-                    },
-                    error: function(err) {
-                        alert(JSON.stringify(err));
-                    }
+            $(".accordion :input[type='text']").prop("readonly", true);
+            $(".mySelect").attr("disabled", true);
 
-                });
-           
+            $.ajax({
+                url: "http://localhost:1337/entities/" + entitiyId,
+                type: 'DELETE',
+                data: data,
+                success: function(result) {
+                    console.log(JSON.stringify(result));
+                },
+                error: function(err) {
+                    alert(JSON.stringify(err));
+                }
+
+            });
+
 
 
         },
@@ -360,51 +430,70 @@ $(".mySelect").attr("disabled", true);
         }
 
     });
+ this.removeEventListener("click", saveAll);
 
 }
 
 function dynamicClose(event) {
-                if(window.confirm("Are You Sure To DELETE This Entity??!")) {
-                a = event.currentTarget.parentNode.parentNode.parentNode.parentNode;
-                b = event.currentTarget.parentNode.parentNode.parentElement;
-                a.removeChild(b);
-                }
-            }
+    event.preventDefault();
+
+    if (window.confirm("Are You Sure To DELETE This Entity??!")) {
+        a = event.currentTarget.parentNode.parentNode.parentNode.parentNode;
+        b = event.currentTarget.parentNode.parentNode.parentElement;
+        a.removeChild(b);
+    }
+}
+
 function dynamicEdit(event) {
-    abc(event);
+    event.preventDefault();
+
+    // this.setAttribute("class", "accordionItem accordionItemCollapsed");
+
     $(".accordion :input[type='text']").prop("readonly", false);
-$(".mySelect").attr("disabled", false);
-                this.src = "/images/go.png";
-                this.addEventListener("click", function(event) {
-                    var idEntity = event.currentTarget.previousSibling.previousSibling.value;
+    $(".mySelect").attr("disabled", false);
+    dynamicAdd.style.visibility = "visible";
+    this.src = "/images/go.png";
+    this.setAttribute("class", "accordion");
+    this.addEventListener("click", abc);
+    this.addEventListener("click", submit);
+
+    this.removeEventListener("click", this);
+
+}
+
+function submit(event) {
+    event.preventDefault();
+
+    var idEntity = event.currentTarget.previousSibling.previousSibling.value;
     alert(idEntity);
     this.src = "/images/edit-sans.png";
+    dynamicAdd.style.visibility = "hidden";
     var e;
     var data = {
 
 
-            "entities": _.map($(".show"), e => ({
-                "name": $(e).find(".entityShowValue").val(),
-                "fields": _.map($(e).find(".showClass"), e => ({
-                    "field_name": $(e).find(".fieldShowValue").val(),
-                    "field_type": $(e).find(".mySelect").val(),
-                    "id": $(e).find(".fieldId").val(),
-                }))
-            })),
+        "entities": _.map($(".show"), e => ({
+            "name": $(e).find(".entityShowValue").val(),
+            "fields": _.map($(e).find(".showClass"), e => ({
+                "field_name": $(e).find(".fieldShowValue").val(),
+                "field_type": $(e).find(".mySelect").val(),
+                "id": $(e).find(".fieldId").val(),
+            }))
+        })),
 
     };
     console.log(data);
- $.ajax({
-        url: "http://localhost:1337/entities/" +idEntity,
+    $.ajax({
+        url: "http://localhost:1337/entities/" + idEntity,
         type: 'PUT',
         data: data,
 
         success: function(result) {
             alert("updated");
-                 $(".accordion :input[type='text']").prop("readonly", true);
-$(".mySelect").attr("disabled", true);
+            $(".accordion :input[type='text']").prop("readonly", true);
+            $(".mySelect").attr("disabled", true);
 
-alert("supe");
+
         },
         error: function(err) {
             alert(JSON.stringify(err));
@@ -412,52 +501,53 @@ alert("supe");
 
 
     });
+    this.removeEventListener("click", submit);
 
-                });
-                
-                
-            
-            }
+}
 
 function addField(event) {
+    event.preventDefault();
+
     var div2 = document.createElement("div");
     div2.setAttribute("class", "allFields");
-      var textFields = document.createElement("input");
-                textFields.setAttribute("type", "text");
-                textFields.setAttribute("data-i", "fieldShowValue");
-                textFields.setAttribute("style", "width: 36%; padding: 0.9%; margin: 1%; margin-left: 6%; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0;");
-                div2.appendChild(textFields);
-                // console.log(document.querySelectorAll('.fieldShowValue'));
-                
-                var array = ["STRING", "DATE", "NUMBER"];
-                var selectList = document.createElement("select");
-                selectList.setAttribute("class", "mySelect");
-                selectList.setAttribute("style", "width: 36%; padding: 0.9%; margin: 1%; border: none; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0; margin-left: 7%;");
-                                for(j = 0; j < array.length; j++) {
-                    var option = document.createElement("option");
-                    option.setAttribute("value", array[j]);
-                    option.text = array[j];
-                    selectList.appendChild(option);
-                }
+    var textFields = document.createElement("input");
+    textFields.setAttribute("type", "text");
+    textFields.setAttribute("data-i", "fieldShowValue");
+    textFields.setAttribute("style", "width: 36%; padding: 0.9%; margin: 1%; margin-left: 6%; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0;");
+    div2.appendChild(textFields);
+    // console.log(document.querySelectorAll('.fieldShowValue'));
 
-                div2.appendChild(selectList);
-                fieldId = document.createElement("input");
-                fieldId.setAttribute("type", "hidden");
-                div2.appendChild(fieldId);
-                fieldCBtn = document.createElement("input");
-        fieldCBtn.setAttribute("type", "image");
-        fieldCBtn.setAttribute("style", "float: right; width: 3%; margin: 1.8% 3% 0 0");
-        fieldCBtn.src = "/images/delete.png";
-        fieldCBtn.addEventListener("click", delField);
-        div2.appendChild(fieldCBtn);
-        $(div2).insertAfter(event.currentTarget.nextSibling);
-        // event.currentTarget.nextSibling.appendChild(div2);
+    var array = ["STRING", "DATE", "NUMBER"];
+    var selectList = document.createElement("select");
+    selectList.setAttribute("class", "mySelect");
+    selectList.setAttribute("style", "width: 36%; padding: 0.9%; margin: 1%; border: none; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0; margin-left: 7%;");
+    for (j = 0; j < array.length; j++) {
+        var option = document.createElement("option");
+        option.setAttribute("value", array[j]);
+        option.text = array[j];
+        selectList.appendChild(option);
+    }
+
+    div2.appendChild(selectList);
+    fieldId = document.createElement("input");
+    fieldId.setAttribute("type", "hidden");
+    div2.appendChild(fieldId);
+    fieldCBtn = document.createElement("input");
+    fieldCBtn.setAttribute("type", "image");
+    fieldCBtn.setAttribute("style", "float: right; width: 3%; margin: 1.8% 3% 0 0");
+    fieldCBtn.src = "/images/delete.png";
+    fieldCBtn.addEventListener("click", delField);
+    div2.appendChild(fieldCBtn);
+    $(div2).insertAfter(event.currentTarget.nextSibling);
+    // event.currentTarget.nextSibling.appendChild(div2);
 }
 
 function delField(event) {
-                var a = event.currentTarget.parentNode.parentNode;
-            var b = event.currentTarget.parentNode;
-            a.removeChild(b);
+    event.preventDefault();
+
+    var a = event.currentTarget.parentNode.parentNode;
+    var b = event.currentTarget.parentNode;
+    a.removeChild(b);
 }
 
 
@@ -576,4 +666,3 @@ function abc(e) {
 
     }
 }
-
