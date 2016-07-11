@@ -470,7 +470,7 @@ function submit(event) {
     var e;
     var data = {
             
-            "fields": _.map($(find), e => ({
+            "fields": _.map($(find).find('.allFields'), e => ({
                 "field_name": $(e).find(".fieldShowValue").val(),
                 "field_type": $(e).find(".mySelect").val(),
                 "entities": idEntity,
