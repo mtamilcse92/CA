@@ -73,11 +73,15 @@ module.exports = {
      * `EntitiesController.update()`
      */
     update: function(req, res) {
-        var values = req.params.all();
+       var values = req.params.all();
         var id = req.param('id');
         Entities.update(id, values, function(err, update) {
             if (err) return res.send(err, 500);
-            res.json({ EntitiesUpdate: update });
+            Entities.find({ id: id }).populate('fields').exec(function(err, entitiesUpdated) {
+            if (err) return res.send(err, 500);
+            console.log(entitiesUpdated);
+            res.json( {entitiesCreated: entitiesUpdated} );
+        });
         });
     },
 

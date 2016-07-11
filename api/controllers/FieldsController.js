@@ -84,7 +84,7 @@ module.exports = {
         Fields.find(id, function(err, fields) {
             if (err) return res.send(err, 500);
             if (!fields) return res.send("No user with that id.", 404);
-            Field.destroy(id, function(err) {
+            Fields.destroy(id, function(err) {
                 if (err) return res.send(err, 500);
                 res.json({ FieldValues: "deleted" });
             });

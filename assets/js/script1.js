@@ -33,6 +33,7 @@ var values = [];
 var fieldDiv, fieldInnerDivOne, fieldInnerDivTwo, dieldDummy, fieldCloseBtn, a, b;
 var fieldCount = 0,
     insertFields;
+var fieldId ;
 
 
 elements[2].addEventListener("click", addE);
@@ -102,29 +103,30 @@ function addE(event) {
 
 }
 
-tenantButtons[1].addEventListener("click", function(event) {
+tenantButtons[1].addEventListener("click", tenantEdit);
+ function tenantEdit(event) {
     event.preventDefault();
 
-    this.src = "/images/go.png";
+    this.firstChild.src = "/images/go.png";
     $("#tenant-name").prop("readonly", false);
 
     this.addEventListener("click", submitTenant);
+    this.removeEventListener("click", tenantEdit);
 
-
-
-    this.removeEventListener("click", this);
-
-});
+}
 
 function submitTenant(event) {
     event.preventDefault();
-
+    this.firstChild.src = "/images/edit-sans.png";
     var tenantHidden = document.getElementById("tenantId").value;
-    this.src = "/images/edit-sans.png";
+    var data = {
+        "name": document.getElementById("tenant-name").value,
+    };
     alert("update");
     $.ajax({
         url: "http://localhost:1337/tenant/" + tenantHidden,
         type: 'PUT',
+        data:data,
         success: function(result) {
             alert(JSON.stringify(result));
             $("#tenant-name").prop("readonly", true);
@@ -147,6 +149,7 @@ tenantButtons[2].addEventListener("click", function(event) {
         type: 'DELETE',
         success: function(result) {
             alert(JSON.stringify(result));
+             window.location.href = "http://localhost:1337/";
         },
         error: function(err) {
             alert(JSON.stringify(err));
@@ -177,9 +180,6 @@ function saveTenant(event) {
                 data: data,
                 success: function(result) {
                     var create = _.map(result, 'id');
-                    // var create = _.map(result.entities, enitity => {
-
-                    // });
                     document.getElementById("tenantId").value = create;
                     document.getElementById("setId").value = create;
                     enable_entities(event)
@@ -337,7 +337,7 @@ function saveAll(event) {
             showChild.appendChild(hr);
             // div1 = document.createElement("div");
             // showChild.appendChild(div1);
-
+            // var div3 = document.createElement("div");
             fCount = fieldCount;
             for (i = 0; i < fCount; i++) {
                 var div = document.createElement("div");
@@ -360,7 +360,7 @@ function saveAll(event) {
                 selectList.setAttribute("style", "width: 36%; padding: 0.9%; margin: 1%; border: none; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0; margin-left: 7%;");
                 div.appendChild(selectList);
 
-                var fieldId = document.createElement("input");
+                fieldId = document.createElement("input");
                 fieldId.setAttribute("type", "hidden");
                 fieldId.setAttribute("class", "fieldId");
                 fieldId.value = fieldsId;
@@ -394,7 +394,7 @@ function saveAll(event) {
                 showChild.appendChild(div);
             }
 
-
+             // showChild.appendChild(div3);
 
             dd.appendChild(showChild);
 
@@ -409,21 +409,7 @@ function saveAll(event) {
             $(".accordion :input[type='text']").prop("readonly", true);
             $(".mySelect").attr("disabled", true);
 
-            $.ajax({
-                url: "http://localhost:1337/entities/" + entitiyId,
-                type: 'DELETE',
-                data: data,
-                success: function(result) {
-                    console.log(JSON.stringify(result));
-                },
-                error: function(err) {
-                    alert(JSON.stringify(err));
-                }
-
-            });
-
-
-
+            
         },
         error: function(err) {
             alert(JSON.stringify(err));
@@ -436,8 +422,19 @@ function saveAll(event) {
 
 function dynamicClose(event) {
     event.preventDefault();
-
+var entitiyId = event.currentTarget.previousSibling.value;
     if (window.confirm("Are You Sure To DELETE This Entity??!")) {
+        $.ajax({
+                url: "http://localhost:1337/entities/" + entitiyId,
+                type: 'DELETE',
+                success: function(result) {
+                    console.log(JSON.stringify(result));
+                },
+                error: function(err) {
+                    alert(JSON.stringify(err));
+                }
+
+            });
         a = event.currentTarget.parentNode.parentNode.parentNode.parentNode;
         b = event.currentTarget.parentNode.parentNode.parentElement;
         a.removeChild(b);
@@ -451,9 +448,8 @@ function dynamicEdit(event) {
 
     $(".accordion :input[type='text']").prop("readonly", false);
     $(".mySelect").attr("disabled", false);
-    dynamicAdd.style.visibility = "visible";
+    event.currentTarget.parentNode.parentNode.nextSibling.firstChild.firstChild.nextSibling.style.visibility = "visible";
     this.src = "/images/go.png";
-    this.setAttribute("class", "accordion");
     this.addEventListener("click", abc);
     this.addEventListener("click", submit);
 
@@ -467,33 +463,45 @@ function submit(event) {
     var idEntity = event.currentTarget.previousSibling.previousSibling.value;
     alert(idEntity);
     this.src = "/images/edit-sans.png";
-    dynamicAdd.style.visibility = "hidden";
+    event.currentTarget.parentNode.parentNode.nextSibling.firstChild.firstChild.nextSibling.style.visibility = "hidden";
+    // var find = event.currentTarget.parentNode.parentNode.nextSibling.firstChild.childNodes;
+    var find = $(event.currentTarget).closest('.accordion'); //.parentNode.parentNode.nextSibling.firstChild.childNodes;
+    
     var e;
     var data = {
-
-
-        "entities": _.map($(".show"), e => ({
-            "name": $(e).find(".entityShowValue").val(),
-            "fields": _.map($(e).find(".showClass"), e => ({
+            
+            "fields": _.map($(find), e => ({
                 "field_name": $(e).find(".fieldShowValue").val(),
                 "field_type": $(e).find(".mySelect").val(),
+                "entities": idEntity,
                 "id": $(e).find(".fieldId").val(),
-            }))
-        })),
+            })),
+        
+            "name": $(".entityShowValue").val(),
 
-    };
+        };
     console.log(data);
+    console.log(fieldId);
     $.ajax({
         url: "http://localhost:1337/entities/" + idEntity,
         type: 'PUT',
         data: data,
 
         success: function(result) {
-            alert("updated");
+            console.log(result);
             $(".accordion :input[type='text']").prop("readonly", true);
             $(".mySelect").attr("disabled", true);
-
-
+            var count = Object.keys(result.entitiesCreated[0].fields).length;
+            console.log(count);
+            for (var i = 0; i <count; i++) {
+                fieldsId = result.entitiesCreated[0].fields[i].id;
+                fieldId.setAttribute("class", "fieldId");
+                fieldId.value = fieldsId;
+                // $('.fieldIdValue').val(fieldsId);
+                console.log(fieldsId);
+            // fieldId.setAttribute("class", "fieldId");
+            // console.log(fieldId.length);
+        }
         },
         error: function(err) {
             alert(JSON.stringify(err));
@@ -512,7 +520,7 @@ function addField(event) {
     div2.setAttribute("class", "allFields");
     var textFields = document.createElement("input");
     textFields.setAttribute("type", "text");
-    textFields.setAttribute("data-i", "fieldShowValue");
+    textFields.setAttribute("class", "fieldShowValue");
     textFields.setAttribute("style", "width: 36%; padding: 0.9%; margin: 1%; margin-left: 6%; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0;");
     div2.appendChild(textFields);
     // console.log(document.querySelectorAll('.fieldShowValue'));
@@ -543,11 +551,24 @@ function addField(event) {
 }
 
 function delField(event) {
-    event.preventDefault();
 
-    var a = event.currentTarget.parentNode.parentNode;
-    var b = event.currentTarget.parentNode;
-    a.removeChild(b);
+     var fieldId = event.currentTarget.previousSibling.value;
+    if (window.confirm("Are You Sure To DELETE This Field??!")) {
+        $.ajax({
+            url: "http://localhost:1337/fields/" + fieldId,
+            type: 'DELETE',
+            success: function(result) {
+                console.log(JSON.stringify(result));
+            },
+            error: function(err) {
+                alert(JSON.stringify(err));
+            }
+
+        });
+        var a = event.currentTarget.parentNode.parentNode;
+        var b = event.currentTarget.parentNode;
+        a.removeChild(b);
+    }
 }
 
 
