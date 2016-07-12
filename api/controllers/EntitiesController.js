@@ -36,7 +36,7 @@ module.exports = {
         var id = req.param('id');
         Entities.findOne(id).populate('fields').exec(function(err, show) {
             if (err) return res.send(err, 500);
-            res.json({ EntityTypeShow: show });
+            res.json({ entityTypeShow: show });
         });
     },
 
@@ -101,7 +101,7 @@ module.exports = {
                             if (err) return res.send(err, 500);
                         });
                     });
-                res.json({ EntitiesValues: "deleted" });
+                res.json({ entitiesValues: "deleted" });
         });
     }
 };

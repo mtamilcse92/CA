@@ -20,6 +20,15 @@ body{
 
 }
 
+.go-button{
+  width: 3%;
+    float: right;
+    margin-top: 1%;
+    margin-right: 5%;
+    background-color: #fff;
+    padding: 1%;
+    border-radius: 2em;
+}
 .field-add-button{
 	float: right;
     margin-top: -3.5%;
@@ -132,8 +141,10 @@ h3 input{
 .tenant-buttons {
 	width: 10%;
 	float: left;
-	margin-top: 6.6%;
-	margin-left: -12.5%;
+  margin-top: 7.3%;
+  margin-left: -11.5%;
+	/*margin-top: 6.6%;
+	margin-left: -12.5%;*/
 }
 
 .tenant-buttons img {
@@ -246,9 +257,9 @@ h3 input{
 .accordion dl:after {
   content: "";
   display: block;
-  height: 1em;
+  height: 0.8em;
   width: 100%;
-  background-color: #0288D1;
+  background-color: #00a6b6;
   border-bottom-left-radius: 1em;
   border-bottom-right-radius: 1em;
 }
@@ -256,7 +267,7 @@ h3 input{
 .accordion dt > a {
   text-align: center;
   font-weight: 700;
-  padding: 2em;
+  padding: 1em;
   display: block;
   text-decoration: none;
   color: #fff;
@@ -283,8 +294,8 @@ border-radius: 1em;
 }
 
 .accordionTitle {
-  background-color: #03A9F4;
-  border-bottom: 1px solid #DCE775;
+  background-color: #37ADC7;
+  /*border-bottom: 1px solid #DCE775;*/
   border-top-left-radius: 1em;
   border-top-right-radius: 1em;
   /*marees*/
@@ -292,7 +303,9 @@ border-radius: 1em;
 
 .accordionTitle:before {
   content: "+";
-  font-size: 1.5em;
+  font-size: 2em;
+  margin-left: 1em;
+  margin-top: 0.6em;
   line-height: 0.5em;
   float: left;
   -moz-transition: -moz-transform 0.3s ease-in-out;
@@ -302,12 +315,12 @@ border-radius: 1em;
 }
 
 .accordionTitle:hover {
- background-color: #0288D1; 
+ background-color: #00A6B6; 
   border-top-left-radius: 1em;
   border-top-right-radius: 1em;}
 
 .accordionTitleActive { 
-	background-color: #01579B; 
+	background-color: #00a6b6; 
   border-top-left-radius: 1em;
   border-top-right-radius: 1em;}
 

@@ -4,6 +4,8 @@
 <head>
     <title>TENANT</title>
     <link rel="stylesheet" href="/styles/style1.css">
+    <link rel="stylesheet" href="/styles/tingle.min.css">
+    <script src="/js/tingle.min.js"></script>
     <script src="/js/lodash.core.min.js"></script>
      <script src="/js/json2.js"></script>
      <script src="/js/jquery-2.2.4.min.js"></script>
@@ -25,7 +27,7 @@
                     <div class="tenant-name">
                     
                         <label for="tenant-name">NAME:</label>
-                        <input type="text" id="tenant-name" placeholder="tenant name" />
+                        <input type="text" id="tenant-name" placeholder="tenant name" autofocus/>
                         <input type="hidden" name="id" value="" id="tenantId">
                        
                     </div>
@@ -41,11 +43,12 @@
             </div>
             
             <div class="main-section">
-                <h3>ENTITIES <input type="image" src="/images/go.png" alt="save" id="save" onclick="saveAll()"></h3>
+                <h3>ENTITIES </h3>
                 <div class="container">
                     <div class="fixed-entity">
                         <div class="fixed-entity-name-block">
                             <label for="fixed-entity-name">ENTITY NAME:</label>
+                            <input class="go-button" type="image" src="/images/go.png" alt="save" id="save" onclick="saveAll()">
                             <input type="text" id="fixed-entity-name" data-value="entity" placeholder="entity name"/>
                             <input type="hidden" name="id" value="" id="setId">
                         </div>
@@ -55,9 +58,9 @@
                             <input type="text" id="fixed-entity-field-name" data-value="field" placeholder="field name"/>
                             <label for="fixed-entity-field-type">TYPE:</label>
                             <select name="type" id="fixed-entity-field-type" data-value="type">
-                                <option value="STRING">STRING</option>
-                                <option value="NUMBER">NUMBER</option>
-                                <option value="DATE">DATE</option>
+                                <option value="String">String</option>
+                                <option value="Number">Number</option>
+                                <option value="Date">Date</option>
                             </select>
                             <div class="field-add-button"><input class="add" type="image" src="/images/Add-green.png" alt="add"></div>
                             

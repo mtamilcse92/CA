@@ -48,7 +48,7 @@ module.exports = {
         var values = req.params.all();
         Fields.create(values, function(err, create) {
             if (err) return res.send(err, 500);
-            res.json({ FieldCreate: create });
+            res.json({ fieldCreate: create });
         });
     },
 
@@ -71,7 +71,7 @@ module.exports = {
         var id = req.param('id');
         Fields.update(id, values, function(err, update) {
             if (err) return res.send(err, 500);
-            res.json({ FieldUpdate: update });
+            res.json({ fieldUpdate: update });
         });
     },
 
@@ -86,7 +86,7 @@ module.exports = {
             if (!fields) return res.send("No user with that id.", 404);
             Fields.destroy(id, function(err) {
                 if (err) return res.send(err, 500);
-                res.json({ FieldValues: "deleted" });
+                res.json({ fieldValues: "deleted" });
             });
         });
     }

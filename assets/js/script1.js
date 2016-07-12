@@ -190,18 +190,18 @@ function saveTenant(event) {
                     $("#tenant-name").prop("readonly", true);
                 },
                 error: function(err) {
-                    alert(JSON.stringify(err));
+                    tingleAlert("<h1>"+"Tenant Name Error"+"</h1>");
                 }
 
             });
 
         } else {
-            alert("Tenant Name Should be a Letters");
+           tingleAlert("<h1>"+"Tenant Name Should Not Contain Special Characters"+ "</h1>");
         }
 
     } else {
-
-        alert('Missing Tenant Name');
+        tingleAlert("<h1>"+"Tenant Name Required"+"</h1>");
+        
     }
 
     this.removeEventListener("click", saveTenant);
@@ -221,15 +221,15 @@ function saveAll(event) {
     var data = {
 
         "fields": _.map($(".entityClass"), e => ({
-            "field_name": $(e).find(".entityValue").text(),
-            "field_type": $(e).find(".fieldValue").text()
+            "name": $(e).find(".entityValue").text(),
+            "type": $(e).find(".fieldValue").text()
         })),
 
         "name": $("#fixed-entity-name").val(),
         "tenant": id
     };
 
-    alert("created");
+    console.log(data);
 
 
     $.ajax({
@@ -287,7 +287,7 @@ function saveAll(event) {
             var textEntities = document.createElement("input");
             textEntities.setAttribute("type", "text");
             textEntities.setAttribute("class", "entityShowValue");
-            textEntities.setAttribute("style", "width: 25%; padding: 1%; margin: 1%; margin-left: 5em; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0;");
+            textEntities.setAttribute("style", "width: 30%; padding: 1%; margin: 1%; margin-left: -22em; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0; text-transform:uppercase;");
             textEntities.value = enitityValue;
             accordionTitle.appendChild(textEntities);
             var entityIdShow = document.createElement("input");
@@ -333,7 +333,7 @@ function saveAll(event) {
 
 
             var hr = document.createElement('hr');
-            hr.setAttribute("style", "width: 88%;");
+            hr.setAttribute("style", "width: 88%; margin: 2%;");
             showChild.appendChild(hr);
             // div1 = document.createElement("div");
             // showChild.appendChild(div1);
@@ -342,15 +342,15 @@ function saveAll(event) {
             for (i = 0; i < fCount; i++) {
                 var div = document.createElement("div");
                 div.setAttribute("class", "allFields");
-                fieldsValue = result.entitiesCreated[0].fields[i].field_name;
-                fieldsType = result.entitiesCreated[0].fields[i].field_type;
+                fieldsValue = result.entitiesCreated[0].fields[i].name;
+                fieldsType = result.entitiesCreated[0].fields[i].type;
                 fieldsId = result.entitiesCreated[0].fields[i].id;
                 console.log(fieldsValue);
 
                 var textFields = document.createElement("input");
                 textFields.setAttribute("type", "text");
                 textFields.setAttribute("class", "fieldShowValue");
-                textFields.setAttribute("style", "width: 36%; padding: 0.9%; margin: 1%; margin-left: 6%; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0;");
+                textFields.setAttribute("style", "width: 36%; padding: 0.9%; margin: 1%; margin-left: 6%; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0; text-transform:capitalize;");
                 div.appendChild(textFields);
                 // console.log(document.querySelectorAll('.fieldShowValue'));
                 textFields.value = fieldsValue;
@@ -409,10 +409,9 @@ function saveAll(event) {
             $(".accordion :input[type='text']").prop("readonly", true);
             $(".mySelect").attr("disabled", true);
 
-            
         },
         error: function(err) {
-            alert(JSON.stringify(err));
+             tingleAlert("<h1>"+"TRY AGAIN"+"</h1>");
         }
 
     });
@@ -423,24 +422,43 @@ function saveAll(event) {
 function dynamicClose(event) {
     event.preventDefault();
 var entitiyId = event.currentTarget.previousSibling.value;
-    if (window.confirm("Are You Sure To DELETE This Entity??!")) {
+a = event.currentTarget.parentNode.parentNode.parentNode.parentNode;
+        b = event.currentTarget.parentNode.parentNode.parentElement;
+    var modalTinyBtn = new tingle.modal({
+        footer: true
+    });
+    modalTinyBtn.open();
+    
+  
+
+modalTinyBtn.setContent("You want to Delete this Entity?");
+
+    modalTinyBtn.addFooterBtn('YES', 'tingle-btn tingle-btn--primary tingle-btn--pull-right', function(){
+        deleteEntity(entitiyId,a,b);
+        modalTinyBtn.close();
+    });
+
+    modalTinyBtn.addFooterBtn('NO', 'tingle-btn tingle-btn--default tingle-btn--pull-right', function(){
+        modalTinyBtn.close();
+    });
+}
+    function deleteEntity(entitiyId,x,y) {
+        alert("hi delete");
         $.ajax({
-                url: "http://localhost:1337/entities/" + entitiyId,
+                url: "http://localhost:1337/entities/"+ entitiyId,
                 type: 'DELETE',
                 success: function(result) {
                     console.log(JSON.stringify(result));
+
                 },
                 error: function(err) {
                     alert(JSON.stringify(err));
                 }
 
             });
-        a = event.currentTarget.parentNode.parentNode.parentNode.parentNode;
-        b = event.currentTarget.parentNode.parentNode.parentElement;
-        a.removeChild(b);
-    }
-}
-
+        
+        x.removeChild(y);
+    };
 function dynamicEdit(event) {
     event.preventDefault();
 
@@ -464,15 +482,14 @@ function submit(event) {
     alert(idEntity);
     this.src = "/images/edit-sans.png";
     event.currentTarget.parentNode.parentNode.nextSibling.firstChild.firstChild.nextSibling.style.visibility = "hidden";
-    // var find = event.currentTarget.parentNode.parentNode.nextSibling.firstChild.childNodes;
     var find = $(event.currentTarget).closest('.accordion'); //.parentNode.parentNode.nextSibling.firstChild.childNodes;
     
     var e;
     var data = {
             
             "fields": _.map($(find).find('.allFields'), e => ({
-                "field_name": $(e).find(".fieldShowValue").val(),
-                "field_type": $(e).find(".mySelect").val(),
+                "name": $(e).find(".fieldShowValue").val(),
+                "type": $(e).find(".mySelect").val(),
                 "entities": idEntity,
                 "id": $(e).find(".fieldId").val(),
             })),
@@ -504,7 +521,7 @@ function submit(event) {
         }
         },
         error: function(err) {
-            alert(JSON.stringify(err));
+            tingleAlert("<h1>"+"TRY AGAIN"+"</h1>");
         }
 
 
@@ -521,7 +538,7 @@ function addField(event) {
     var textFields = document.createElement("input");
     textFields.setAttribute("type", "text");
     textFields.setAttribute("class", "fieldShowValue");
-    textFields.setAttribute("style", "width: 36%; padding: 0.9%; margin: 1%; margin-left: 6%; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0;");
+    textFields.setAttribute("style", "width: 36%; padding: 0.9%; margin: 1%; margin-left: 6%; border-radius: 0.5em; border: solid; border-width: thin; border-color: #EFEFF0; text-transform: capitalize;");
     div2.appendChild(textFields);
     // console.log(document.querySelectorAll('.fieldShowValue'));
 
@@ -550,30 +567,68 @@ function addField(event) {
     // event.currentTarget.nextSibling.appendChild(div2);
 }
 
+
 function delField(event) {
 
      var fieldId = event.currentTarget.previousSibling.value;
-    if (window.confirm("Are You Sure To DELETE This Field??!")) {
-        $.ajax({
+     a = event.currentTarget.parentNode.parentNode;
+        b = event.currentTarget.parentNode;
+    var modalTinyBtn = new tingle.modal({
+        footer: true
+    });
+    modalTinyBtn.open();
+    
+  
+
+modalTinyBtn.setContent("You want to Delete this Field?");
+
+    modalTinyBtn.addFooterBtn('YES', 'tingle-btn tingle-btn--primary tingle-btn--pull-right', function(){
+        deleteField(fieldId,a,b);
+        modalTinyBtn.close();
+    });
+
+    modalTinyBtn.addFooterBtn('NO', 'tingle-btn tingle-btn--default tingle-btn--pull-right', function(){
+        modalTinyBtn.close();
+    });
+}
+
+function deleteField(fieldId,x,y) {
+        alert("hi delete");
+                $.ajax({
             url: "http://localhost:1337/fields/" + fieldId,
             type: 'DELETE',
             success: function(result) {
                 console.log(JSON.stringify(result));
             },
             error: function(err) {
-                alert(JSON.stringify(err));
+                
             }
 
         });
-        var a = event.currentTarget.parentNode.parentNode;
-        var b = event.currentTarget.parentNode;
-        a.removeChild(b);
-    }
+        
+        x.removeChild(y);
 }
 
 
-//SHOW
+var modalTinyNoFooter = new tingle.modal({
+        onClose: function() {
+            console.log('close');
+        },
+        onOpen: function() {
+            console.log('open');
+            console.log(this.modalBox.clientWidth);
+        },
+        cssClass: ['class1', 'class2']
+    });
 
+//SHOW
+function tingleAlert(message)
+ {
+
+
+        modalTinyNoFooter.open();
+         modalTinyNoFooter.setContent(message);
+ }
 
 (function(window) {
 

@@ -9,7 +9,7 @@ module.exports = {
 
   attributes: {
 
-    name : { type: 'string', unique: 'true'},
+    name : { type: 'string', unique: 'true', required: 'true'},
 
     entities :{ collection: 'entities',via: 'tenant'}
   }

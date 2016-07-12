@@ -36,7 +36,7 @@ module.exports = {
         var id = req.param('id');
         Tenant.findOne(id).populate('entities').exec(function(err, show) {
             if (err) return res.send(err, 500);
-            res.json({ TenantShow: show });
+            res.json({ tenantShow: show });
         });
     },
 
@@ -52,7 +52,7 @@ module.exports = {
         Tenant.create(values, function(err, tenantCreate) {
             if (err) return res.send(err, 500);
             console.log(tenantCreate);
-            return res.json({ TenantCreate: tenantCreate });
+            return res.json({ tenantCreate: tenantCreate });
         });
     },
 
@@ -77,7 +77,7 @@ module.exports = {
         Tenant.update(id, values, function(err, update) {
             if (err) return res.send(err, 500);
             console.log(update);
-            res.json({ TenantUpdate: update });
+            res.json({ tenantUpdate: update });
         });
     },
 
