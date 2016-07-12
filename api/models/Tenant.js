@@ -11,7 +11,7 @@ module.exports = {
 
     name : { type: 'string', unique: 'true', required: 'true'},
 
-    entities :{ collection: 'entities',via: 'tenant'}
+    entities :{ collection: 'entity',via: 'tenant'}
   }
 };
 

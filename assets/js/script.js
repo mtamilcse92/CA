@@ -90,11 +90,11 @@ function addE(event) {
         console.log(fieldCount);
         this.removeEventListener("click", this, false);
     } else if (entityName.trim() == '' || !entityName.match(letters)) {
-        alert('Enter valid Entity Name');
+        tingleAlert("<h3>"+'Enter valid Entity Name'+"</h3>");
 
     } else {
 
-        alert('Enter valid Field Name');
+        alert("<h3>"+'Enter valid Field Name'+"</h3>");
 
     }
 
@@ -139,10 +139,35 @@ function submitTenant(event) {
     this.removeEventListener("click", submitTenant);
 }
 
+
 tenantButtons[2].addEventListener("click", function(event) {
     event.preventDefault();
 
     var tenantHidden = document.getElementById("tenantId").value;
+    var modalTinyBtn = new tingle.modal({
+        footer: true
+    });
+    modalTinyBtn.open();
+    
+  
+
+modalTinyBtn.setContent("<h3>"+"You want to Delete Tenant?"+"</h3>");
+
+    modalTinyBtn.addFooterBtn('YES', 'tingle-btn tingle-btn--primary tingle-btn--pull-right', function(){
+        deleteTenant(tenantHidden);
+        modalTinyBtn.close();
+    });
+
+    modalTinyBtn.addFooterBtn('NO', 'tingle-btn tingle-btn--default tingle-btn--pull-right', function(){
+        modalTinyBtn.close();
+    });
+
+
+    this.removeEventListener("click", this);
+
+});
+
+function deleteTenant(tenantHidden) {
     alert("delete");
     $.ajax({
         url: "http://localhost:1337/tenant/" + tenantHidden,
@@ -156,10 +181,8 @@ tenantButtons[2].addEventListener("click", function(event) {
         }
 
     });
+}
 
-    this.removeEventListener("click", this);
-
-});
 
 var letters = /^[A-Za-z]+$/;
 
@@ -190,17 +213,17 @@ function saveTenant(event) {
                     $("#tenant-name").prop("readonly", true);
                 },
                 error: function(err) {
-                    tingleAlert("<h1>"+"Tenant Name Error"+"</h1>");
+                    tingleAlert("<h3>"+"Tenant Name Error"+"</h3>");
                 }
 
             });
 
         } else {
-           tingleAlert("<h1>"+"Tenant Name Should Not Contain Special Characters"+ "</h1>");
+           tingleAlert("<h3>"+"Tenant Name Should Not Contain Special Characters"+ "</h3>");
         }
 
     } else {
-        tingleAlert("<h1>"+"Tenant Name Required"+"</h1>");
+        tingleAlert("<h3>"+"Tenant Name Required"+"</h3>");
         
     }
 
@@ -233,7 +256,7 @@ function saveAll(event) {
 
 
     $.ajax({
-        url: "http://localhost:1337/entities",
+        url: "http://localhost:1337/entity",
         type: 'POST',
         data: data,
 
@@ -246,21 +269,21 @@ function saveAll(event) {
             fixedEntity.appendChild(insertFields);
 
             alert(JSON.stringify(result));
-            var getId = _.map(result.entitiesCreated, 'id');
-            var enitityValue = result.entitiesCreated[0].name;
+            var getId = _.map(result.entityCreated, 'id');
+            var enitityValue = result.entityCreated[0].name;
             console.log(enitityValue);
             var fieldsValue;
             var fieldsType;
             console.log(JSON.stringify(result));
             console.log(enitityValue);
 
-            var get = _.map(result.entitiesCreated, enitity => {
+            var get = _.map(result.entityCreated, enitity => {
                 $(enitity).find('fields')
                     // _.map(enitity, 'fields')
                     // enitity.fields.id
 
             });
-            var entitiyId = result.entitiesCreated[0].id;
+            var entitiyId = result.entityCreated[0].id;
 
 
             var show = document.querySelector(".show");
@@ -333,7 +356,7 @@ function saveAll(event) {
 
 
             var hr = document.createElement('hr');
-            hr.setAttribute("style", "width: 88%; margin: 2%;");
+            hr.setAttribute("style", "width: 88%; margin: 1%;");
             showChild.appendChild(hr);
             // div1 = document.createElement("div");
             // showChild.appendChild(div1);
@@ -342,9 +365,9 @@ function saveAll(event) {
             for (i = 0; i < fCount; i++) {
                 var div = document.createElement("div");
                 div.setAttribute("class", "allFields");
-                fieldsValue = result.entitiesCreated[0].fields[i].name;
-                fieldsType = result.entitiesCreated[0].fields[i].type;
-                fieldsId = result.entitiesCreated[0].fields[i].id;
+                fieldsValue = result.entityCreated[0].fields[i].name;
+                fieldsType = result.entityCreated[0].fields[i].type;
+                fieldsId = result.entityCreated[0].fields[i].id;
                 console.log(fieldsValue);
 
                 var textFields = document.createElement("input");
@@ -411,7 +434,7 @@ function saveAll(event) {
 
         },
         error: function(err) {
-             tingleAlert("<h1>"+"TRY AGAIN"+"</h1>");
+             tingleAlert("<h3>"+"TRY AGAIN"+"</h3>");
         }
 
     });
@@ -445,7 +468,7 @@ modalTinyBtn.setContent("You want to Delete this Entity?");
     function deleteEntity(entitiyId,x,y) {
         alert("hi delete");
         $.ajax({
-                url: "http://localhost:1337/entities/"+ entitiyId,
+                url: "http://localhost:1337/entity/"+ entitiyId,
                 type: 'DELETE',
                 success: function(result) {
                     console.log(JSON.stringify(result));
@@ -494,13 +517,13 @@ function submit(event) {
                 "id": $(e).find(".fieldId").val(),
             })),
         
-            "name": $(".entityShowValue").val(),
+            "name": $(find).find(".entityShowValue").val(),
 
         };
     console.log(data);
     console.log(fieldId);
     $.ajax({
-        url: "http://localhost:1337/entities/" + idEntity,
+        url: "http://localhost:1337/entity/" + idEntity,
         type: 'PUT',
         data: data,
 
@@ -508,10 +531,10 @@ function submit(event) {
             console.log(result);
             $(".accordion :input[type='text']").prop("readonly", true);
             $(".mySelect").attr("disabled", true);
-            var count = Object.keys(result.entitiesCreated[0].fields).length;
+            var count = Object.keys(result.entityCreated[0].fields).length;
             console.log(count);
             for (var i = 0; i <count; i++) {
-                fieldsId = result.entitiesCreated[0].fields[i].id;
+                fieldsId = result.entityCreated[0].fields[i].id;
                 fieldId.setAttribute("class", "fieldId");
                 fieldId.value = fieldsId;
                 // $('.fieldIdValue').val(fieldsId);
@@ -521,7 +544,7 @@ function submit(event) {
         }
         },
         error: function(err) {
-            tingleAlert("<h1>"+"TRY AGAIN"+"</h1>");
+            tingleAlert("<h3>"+"TRY AGAIN"+"</h3>");
         }
 
 
@@ -595,7 +618,7 @@ modalTinyBtn.setContent("You want to Delete this Field?");
 function deleteField(fieldId,x,y) {
         alert("hi delete");
                 $.ajax({
-            url: "http://localhost:1337/fields/" + fieldId,
+            url: "http://localhost:1337/field/" + fieldId,
             type: 'DELETE',
             success: function(result) {
                 console.log(JSON.stringify(result));

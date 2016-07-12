@@ -1,7 +1,7 @@
 /**
- * FieldsController
+ * FieldController
  *
- * @description :: Server-side logic for managing fields
+ * @description :: Server-side logic for managing Field
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
@@ -10,7 +10,7 @@ module.exports = {
 
 
     /**
-     * `FieldsController.index()`
+     * `FieldController.index()`
      */
     // index: function (req, res) {
     //   return res.json({
@@ -20,7 +20,7 @@ module.exports = {
 
 
     /**
-     * `FieldsController.new()`
+     * `FieldController.new()`
      */
     new: function(req, res) {
         return res.json({
@@ -30,23 +30,23 @@ module.exports = {
 
 
     /**
-     * `FieldsController.show()`
+     * `FieldController.show()`
      */
     show: function(req, res) {
         var id = req.param('id');
-        Fields.findOne(id, function(err, show) {
+        Field.findOne(id, function(err, show) {
             if (err) return res.send(err, 500);
-            res.json({ FieldShow: show });
+            res.json({ Fieldhow: show });
         });
     },
 
 
     /**
-     * `FieldsController.create()`
+     * `FieldController.create()`
      */
     create: function(req, res) {
         var values = req.params.all();
-        Fields.create(values, function(err, create) {
+        Field.create(values, function(err, create) {
             if (err) return res.send(err, 500);
             res.json({ fieldCreate: create });
         });
@@ -54,7 +54,7 @@ module.exports = {
 
 
     /**
-     * `FieldsController.edit()`
+     * `FieldController.edit()`
      */
     edit: function(req, res) {
         return res.json({
@@ -64,12 +64,12 @@ module.exports = {
 
 
     /**
-     * `FieldsController.update()`
+     * `FieldController.update()`
      */
     update: function(req, res) {
         var values = req.params.all();
         var id = req.param('id');
-        Fields.update(id, values, function(err, update) {
+        Field.update(id, values, function(err, update) {
             if (err) return res.send(err, 500);
             res.json({ fieldUpdate: update });
         });
@@ -77,14 +77,14 @@ module.exports = {
 
 
     /**
-     * `FieldsController.destroy()`
+     * `FieldController.destroy()`
      */
     destroy: function(req, res) {
         var id = req.param('id');
-        Fields.find(id, function(err, fields) {
+        Field.find(id, function(err, field) {
             if (err) return res.send(err, 500);
-            if (!fields) return res.send("No user with that id.", 404);
-            Fields.destroy(id, function(err) {
+            if (!field) return res.send("No user with that id.", 404);
+            Field.destroy(id, function(err) {
                 if (err) return res.send(err, 500);
                 res.json({ fieldValues: "deleted" });
             });

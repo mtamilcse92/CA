@@ -93,12 +93,12 @@ module.exports = {
             if (err) return res.send(err, 500);
             if (!tenant) return res.send("No user with that id.", 404);
 
-            Entities.find({ tenant: id }).exec(function(err, findEntities) {
+            Entity.find({ tenant: id }).exec(function(err, findEntities) {
                 if (err) return res.send(err, 500);
                 _.each(findEntities, entity => {
-                    Fields.destroy({ entities: entity.id }).exec(function(err, fields) {
+                    Field.destroy({ entities: entity.id }).exec(function(err, fields) {
                         if (err) return res.send(err, 500);
-                        Entities.destroy({ tenant: id }).exec(function(err, entities) {
+                        Entity.destroy({ tenant: id }).exec(function(err, entities) {
                             if (err) return res.send(err, 500);
                         });
 
