@@ -39,6 +39,8 @@
     position: fixed;
     top: 3%;
     right: 3%;
+    top: 27%;
+    margin-right: 24%;
     z-index: 1000;
     padding: 0;
     width: 40px;
@@ -72,9 +74,14 @@
     -ms-transform: scale(.6);
     transform: scale(.6)
 }
-
+h4{
+    width: 100%;
+    padding-bottom: 1%;
+    margin-left: -0.6em;
+}
 .tingle-modal-box__content {
-    padding: 2rem 2rem;
+    background-color:rgba(134, 135, 135, 0.12);
+    padding: 1rem 1rem;
     text-align: center;
 }
 
@@ -162,5 +169,5 @@
 }
 
 .tingle-btn--pull-right {
-    float: right
+    float: right;
 }

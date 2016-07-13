@@ -34,15 +34,15 @@
                 </div>
                 <div class="tenant-buttons">
                 <div class="submittooltip">
-                    <a id="save_entity" href="#"><img src="/images/go.png" alt="GO"></a><div class="goimg">submit</div>
+                    <a id="save_entity" href="#"><img src="/images/go.png" alt="GO"></a><div class="goimg">Submit</div>
                     </div>
                     <div class="edittooltip">
                     <a href="#"><img src="/images/edit-sans.png" alt="EDIT"></a>
-                    <div class="editimg">edit</div>
+                    <div class="editimg">Edit</div>
                     </div>
                     <div class="deletetooltip">
                     <a href="#"><img src="/images/delete.png" alt="DELETE"></a>
-                    <div class="deleteimg">delete</div>
+                    <div class="deleteimg">Remove</div>
                     </div>
                      <!-- <input type="image" src="/images/delete.png" alt="save" id="clear" onclick=""> -->
                 </div>
@@ -56,7 +56,9 @@
                     <div class="fixed-entity">
                         <div class="fixed-entity-name-block">
                             <label for="fixed-entity-name">ENTITY NAME:</label>
-                            <input class="go-button" type="image" src="/images/go.png" alt="save" id="save" onclick="saveAll()">
+                            <div class="entitySubmitToolTip">
+                            <input class="go-button" type="image" src="/images/arrow.png" alt="save" id="save" onclick="saveAll()">
+                            <div class="goimg">Submit</div></div>
                             <input type="text" id="fixed-entity-name" data-value="entity" placeholder="entity name"/>
                             <input type="hidden" name="id" value="" id="setId">
                         </div>
@@ -70,8 +72,11 @@
                                 <option value="Number">Number</option>
                                 <option value="Date">Date</option>
                             </select>
-                            <div class="field-add-button"><input class="add" type="image" src="/images/Add-green.png" alt="add"></div>
-                            
+                            <div class="fieldSubmitToolTip">
+                                <input class="add" type="image" src="/images/Add-green.png" alt="add">
+                            <span class="addImg">Add</span>
+                            </div>
+                            <div class='clearfix'></div>
                         </div>
                         <div class="temp-value"></div>
                         
