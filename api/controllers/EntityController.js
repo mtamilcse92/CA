@@ -52,7 +52,7 @@ module.exports = {
             id = create.id;
             Entity.find({ id: id }).populate('fields').exec(function(err, entityFields) {
             if (err) return res.send(err, 500);
-            console.log(entityFields);
+            // console.log(entityFields);
             res.json( {entityCreated: entityFields} );
         });
         });
@@ -79,7 +79,7 @@ module.exports = {
             if (err) return res.send(err, 500);
             Entity.find({ id: id }).populate('fields').exec(function(err, entityUpdated) {
             if (err) return res.send(err, 500);
-            console.log(entityUpdated);
+            // console.log(entityUpdated);
             res.json( {entityCreated: entityUpdated} );
         });
         });

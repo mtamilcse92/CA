@@ -50,8 +50,11 @@ module.exports = {
         
         // console.log(values);
         Tenant.create(values, function(err, tenantCreate) {
-            if (err) return res.send(err, 500);
-            console.log(tenantCreate);
+            if (err){return res.send(err, 500);
+                // console.log(err.status);
+            } 
+            
+            // console.log(tenantCreate);
             return res.json({ tenantCreate: tenantCreate });
         });
     },
@@ -76,7 +79,7 @@ module.exports = {
         var id = req.param('id');
         Tenant.update(id, values, function(err, update) {
             if (err) return res.send(err, 500);
-            console.log(update);
+            // console.log(update);
             res.json({ tenantUpdate: update });
         });
     },
@@ -88,7 +91,7 @@ module.exports = {
     destroy: function(req, res) {
         var id = req.param('id');
         var entitiesId;
-        console.log(id);
+        // console.log(id);
         Tenant.find(id).populate('entities').exec(function(err, tenant) {
             if (err) return res.send(err, 500);
             if (!tenant) return res.send("No user with that id.", 404);
@@ -105,12 +108,12 @@ module.exports = {
                     });
                 });
                 var entitiesId = findEntities.id;
-                console.log(entitiesId);
-                console.log(findEntities);
+                // console.log(entitiesId);
+                // console.log(findEntities);
                 Tenant.destroy({ id: id }).exec(function(err) {
                     if (err) return res.send(err, 500);
 
-                    console.log(id);
+                    // console.log(id);
 
                 });
                 res.json({ values: "deleted" });

@@ -120,8 +120,8 @@
 .entitySubmitToolTip .goimg {
     visibility: hidden;
     width: 67px;
-    background-color: white;
-    color: #00a6b6;
+    background-color: #00a6b6;
+    color: white;
     text-align: center;
     border-radius: 6px;
     padding: 5px 0;
@@ -131,7 +131,7 @@
     bottom: 100%;
     left: 50%;
     margin-left: 17.8em;
-    margin-bottom: -0.1em;
+    margin-bottom: 0.7em;
 }
 
 .entitySubmitToolTip .goimg::after {
@@ -267,7 +267,7 @@ body{
 .go-button{
   width: 3%;
     float: right;
-    margin-top: 1%;
+    margin-top: -1%;
     margin-right: 5%;
     background-color: #fff;
     padding: 1%;
@@ -282,6 +282,7 @@ h3{
 	width: 100%;
 	padding-bottom: 1%;
 	margin-right: 0%;
+  margin-bottom: 0%;
 	margin-left: 1.4em;
 }
 
@@ -292,6 +293,18 @@ h3 input{
 	 /*width="48";
 	  height="48";*/
 }
+
+h5{
+  width: 100%;
+  padding-bottom: 1%;
+  margin-right: 0%;
+  margin-left: -1.7%;
+  margin-bottom: 1%;
+  font-size: 19px;
+  margin-top: 3%;
+}
+
+
 
 #clear{
 	width: 27%;
@@ -361,6 +374,7 @@ h3 input{
 	width: 78%;
 	margin-left: 0.6%;
 	float: left;
+  margin-top: 4%;
  
 }
 
@@ -388,6 +402,14 @@ h3 input{
   margin-left: -11.5%;
 	/*margin-top: 6.6%;
 	margin-left: -12.5%;*/
+}
+
+.tenant-buttons a{
+display: none;
+}
+
+#save_entity{
+display:inline;
 }
 
 .tenant-buttons img {
@@ -448,6 +470,7 @@ h3 input{
    border-width: 2px;
    border-color: #EFEFF0;
    text-transform: uppercase;
+   margin-left: 1em;
    
   
 }
@@ -464,7 +487,7 @@ h3 input{
 	border-radius: 0.9em;
 	border:2px solid #4FC3F7; /*#EFEFF0;*/
 	border-width: thin;
-	padding: 23px 17px 23px 33px;
+	padding: 0px 17px 23px 33px;
 
 }
 
